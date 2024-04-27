@@ -1,0 +1,12 @@
+{
+  "name": "ivanbelyj.personality",
+  "version": "0.0.0",
+  "displayName": "Personality",
+  "unity": "2021.3",
+  "unityRelease": "9f1",
+  "author": {
+    "name": "Ivan Belyj",
+    "email": "ivanbelyj743@gmail.com"
+  },
+  "description": "Character personality representation and interactive dialogue systems including UI."
+}
