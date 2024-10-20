@@ -27,7 +27,11 @@ public class Person : Character, ISubject
             Debug.LogWarning("networkIdentity is not found by " + id);
         }
         
-        return identity?.GetComponent<Person>().PersonName
-            ?? id.ToString();
+        return GetPersonName(identity) ?? id.ToString();
+    }
+
+    private string GetPersonName(NetworkIdentity identity) {
+        return identity.GetComponent<Person>()?.PersonName
+            ?? identity?.GetComponentInChildren<Person>()?.PersonName;
     }
 }
