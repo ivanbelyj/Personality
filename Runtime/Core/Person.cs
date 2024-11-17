@@ -20,18 +20,18 @@ public class Person : Character, ISubject
     /// </summary>
     public string GetKnownCharacterName(CharacterId id) {
         // Todo:
-        NetworkIdentity identity = null;
-        try {
-            identity = NetworkServer.spawned[id.Value];
-        } catch (KeyNotFoundException) {
-            Debug.LogWarning("networkIdentity is not found by " + id);
-        }
+        var spawned = isServer ? NetworkServer.spawned : NetworkClient.spawned;
+        spawned.TryGetValue(id.Value, out var identity);
         
-        return GetPersonName(identity) ?? id.ToString();
+        var personName = GetPersonName(identity);
+        if (personName == null) {
+            Debug.LogWarning($"Cannot get person name (characterId: {id})");
+        }
+        return personName ?? id.ToString();
     }
 
     private string GetPersonName(NetworkIdentity identity) {
-        return identity.GetComponent<Person>()?.PersonName
+        return identity?.GetComponent<Person>()?.PersonName
             ?? identity?.GetComponentInChildren<Person>()?.PersonName;
     }
 }

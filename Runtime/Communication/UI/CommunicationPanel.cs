@@ -46,20 +46,6 @@ public class CommunicationPanel : MonoBehaviour
         this.speaker = speaker;
     }
 
-    private CharacterId GetRecipientByDropdownIndex(int index) {
-        return index == 0 ? CharacterId.NoIdentity
-            : availableRecipients[index - 1];
-    }
-
-    private int GetRecipientDropdownIndex(CharacterId recipient) {
-        if (recipient.IsNoIdentity)
-            return 0;
-        int indexOfRecipient = availableRecipients.IndexOf(recipient);
-        if (indexOfRecipient == -1)
-            return indexOfRecipient;
-        return indexOfRecipient + 1;
-    }
-
     public void OnRecipientSelected(int newIndex) {
         // Debug.Log($"Selected item {newIndex}. there are {availableRecipients.Count} recipients available");
         SetRecipientId(GetRecipientByDropdownIndex(newIndex));
@@ -83,6 +69,7 @@ public class CommunicationPanel : MonoBehaviour
             }
         };
         options.AddRange(recipients
+            .Where(x => x != subject.GetCharacterId())
             .Select(recipientId => new TMP_Dropdown.OptionData() {
                 text = $"{subject.GetKnownCharacterName(recipientId)}"
             }));
@@ -96,6 +83,20 @@ public class CommunicationPanel : MonoBehaviour
         }
 
         UpdatePanel();
+    }
+
+    private CharacterId GetRecipientByDropdownIndex(int index) {
+        return index == 0 ? CharacterId.NoIdentity
+            : availableRecipients[index - 1];
+    }
+
+    private int GetRecipientDropdownIndex(CharacterId recipient) {
+        if (recipient.IsNoIdentity)
+            return 0;
+        int indexOfRecipient = availableRecipients.IndexOf(recipient);
+        if (indexOfRecipient == -1)
+            return indexOfRecipient;
+        return indexOfRecipient + 1;
     }
 
     private void UpdatePanel() {

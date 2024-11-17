@@ -6,7 +6,7 @@ using Mirror;
 /// <summary>
 /// An entity considered as a character with its own identity
 /// </summary>
-public class Character : NetworkBehaviour
+public class Character : NetworkBehaviour, ICharacter
 {
     public CharacterId GetCharacterId()
     {
