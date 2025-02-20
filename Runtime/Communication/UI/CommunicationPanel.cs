@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,25 @@ public class CommunicationPanel : MonoBehaviour
     [SerializeField]
     private TMP_Dropdown recipientDropdown;
 
+    [SerializeField]
+    private TMP_InputField messageInputField;
+
     private List<CharacterId> availableRecipients;
     private CharacterId selectedRecipient;
 
     private IChoicesProvider choicesProvider;
     private ISubject subject;
     private ISpeaker speaker;
+    private Action<string, CharacterId> onMessageSubmitted;
+
+    private void Awake() {
+        messageInputField.onSubmit.AddListener(OnMessageSubmitted);
+    }
+
+    public void OnMessageSubmitted(string text) {
+        messageInputField.text = "";
+        onMessageSubmitted?.Invoke(text, selectedRecipient);
+    }
 
     public void MakeChoiceByNumber(int number) {
         if (number - 1 < 0 || number - 1 >= choiceItems.Count) {
@@ -38,12 +52,16 @@ public class CommunicationPanel : MonoBehaviour
         choiceItems[number - 1].MakeChoice();
     }
 
-    public void Init(IChoicesProvider choicesProvider,
+    public void Init(
+        IChoicesProvider choicesProvider,
         ISubject subject,
-        ISpeaker speaker) {
+        ISpeaker speaker,
+        Action<string, CharacterId> onMessageSubmitted)
+    {
         this.choicesProvider = choicesProvider;
         this.subject = subject;
         this.speaker = speaker;
+        this.onMessageSubmitted = onMessageSubmitted;
     }
 
     public void OnRecipientSelected(int newIndex) {
@@ -117,5 +135,4 @@ public class CommunicationPanel : MonoBehaviour
             choiceItems.Add(newChoiceItem);
         };
     }
-    
 }

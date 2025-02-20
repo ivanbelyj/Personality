@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeechSoundData : SoundData
+public record SpeechSoundData : SoundData
 {
+    public SpeechSoundData(Guid soundId) : base(soundId)
+    {
+    }
+
     public string Message { get; set; }
 
     /// <summary>

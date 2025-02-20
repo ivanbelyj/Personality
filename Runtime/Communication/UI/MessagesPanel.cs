@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,22 @@ public class MessagesPanel : MonoBehaviour
     [SerializeField]
     private ScrollRect scrollRect;
 
-    public void AddMessage(string messageText) {
+    private Dictionary<Guid, TextMeshProUGUI> textComponentsByMessageId = new();
+
+    public void AddOrUpdateMessage(Guid messageId, string messageText) {
+        if (!textComponentsByMessageId.ContainsKey(messageId)) {
+            AddMessage(messageId);
+        }
+
+        var textMeshProUGUI = textComponentsByMessageId[messageId];
+        
+        textMeshProUGUI.text = messageText;
+    }
+
+    private void AddMessage(Guid messageId) {
         var go = Instantiate(textPrefab);
-        go.GetComponent<TextMeshProUGUI>().text = messageText;
+        var textMeshProUGUI = go.GetComponent<TextMeshProUGUI>();
+        textComponentsByMessageId.Add(messageId, textMeshProUGUI);
         go.transform.SetParent(messageItemsParent.transform);
     }
 
