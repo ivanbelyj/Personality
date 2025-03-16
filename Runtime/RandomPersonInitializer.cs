@@ -11,6 +11,6 @@ public class RandomPersonInitializer : MonoBehaviour
     }
 
     private void Start() {
-        person.PersonName = NameUtils.GetRandomName();
+        person.PersonName = "Person Name"; // NameUtils.GetRandomName();
     }
 }

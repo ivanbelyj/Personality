@@ -8,5 +8,9 @@
     "name": "Ivan Belyj",
     "email": "ivanbelyj743@gmail.com"
   },
-  "description": "Character personality representation and interactive dialogue systems including UI."
+  "description": "Character personality representation and interactive dialogue systems including UI.",
+  "dependencies": {
+    "ivanbelyj.common-utilities": "git@github.com:ivanbelyj/CommonUtilitiesUnity.git",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  }
 }
