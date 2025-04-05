@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,5 +9,5 @@ using UnityEngine;
 /// </summary>
 public interface IChoicesProvider
 {
-    IEnumerable<CommunicationCommand> GetChoices(CharacterId recipientId);
+    IEnumerable<CommunicationCommand> GetChoices(Guid? recipientEntityId);
 }

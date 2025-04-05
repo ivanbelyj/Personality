@@ -1,13 +1,12 @@
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
-public class AvrianNameSchemaProvider : ITaggedStringSchemaProvider
+public class PersonNameSchemaGenerator
 {
-    public TaggedStringGenerationSchema GetSchema()
+    public TaggedStringGenerationSchema Generate(
+        PersonalityGenerationParameters parameters)
     {
-        // TODO: implement getting schema using data about a character
-
+        // TODO: implement
         return new TaggedStringGenerationSchema(new List<List<string>> {
             new() { "first-name", Random.value < 0.5 ? "male" : "female" },
             new() { "surname", "lakoar" }

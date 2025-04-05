@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 /// <summary>
-/// An entity considered as a character with its own identity
+/// An entity considered as a character
 /// </summary>
-public class Character : NetworkBehaviour, ICharacter
+public class Character : MonoBehaviour
 {
-    public CharacterId GetCharacterId()
-    {
-        return new CharacterId(netIdentity.netId);
-    }
+    [SerializeField]
+    protected CharacterInfo characterInfo;
+
+    public string CharacterName => characterInfo.characterName;
+    public CharacterInfo CharacterInfo { get => characterInfo; set => characterInfo = value; }
 }

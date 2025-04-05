@@ -28,13 +28,13 @@ public class CommunicationPanel : MonoBehaviour
     [SerializeField]
     private TMP_InputField messageInputField;
 
-    private List<CharacterId> availableRecipients;
-    private CharacterId selectedRecipient;
+    private List<Guid> availableRecipientEntityIds;
+    private Guid? selectedRecipientEntityId;
 
     private IChoicesProvider choicesProvider;
-    private ISubject subject;
+    private ICommunicationSubject subject;
     private ISpeaker speaker;
-    private Action<string, CharacterId> onMessageSubmitted;
+    private Action<string, Guid?> onMessageSubmitted;
 
     private void Awake() {
         messageInputField.onSubmit.AddListener(OnMessageSubmitted);
@@ -42,7 +42,7 @@ public class CommunicationPanel : MonoBehaviour
 
     public void OnMessageSubmitted(string text) {
         messageInputField.text = "";
-        onMessageSubmitted?.Invoke(text, selectedRecipient);
+        onMessageSubmitted?.Invoke(text, selectedRecipientEntityId);
     }
 
     public void MakeChoiceByNumber(int number) {
@@ -54,9 +54,9 @@ public class CommunicationPanel : MonoBehaviour
 
     public void Init(
         IChoicesProvider choicesProvider,
-        ISubject subject,
+        ICommunicationSubject subject,
         ISpeaker speaker,
-        Action<string, CharacterId> onMessageSubmitted)
+        Action<string, Guid?> onMessageSubmitted)
     {
         this.choicesProvider = choicesProvider;
         this.subject = subject;
@@ -74,53 +74,54 @@ public class CommunicationPanel : MonoBehaviour
         speaker.SetSpeechVolume(volume);
     }
 
-    public void SetRecipientId(CharacterId recipientId) {
-        selectedRecipient = recipientId;
+    public void SetRecipientId(Guid? recipientEntityId) {
+        selectedRecipientEntityId = recipientEntityId;
         UpdatePanel();
     }
 
-    public void SetAvailableRecipientIds(List<CharacterId> recipients) {
+    public void SetAvailableRecipientIds(List<Guid> recipientEntityIds) {
         recipientDropdown.ClearOptions();
         var options = new List<TMP_Dropdown.OptionData>() {
             new TMP_Dropdown.OptionData() {
                 text = "Everybody"
             }
         };
-        options.AddRange(recipients
-            .Where(x => x != subject.GetCharacterId())
+        options.AddRange(recipientEntityIds
+            .Where(x => x != subject.EntityId)
             .Select(recipientId => new TMP_Dropdown.OptionData() {
                 text = $"{subject.GetKnownCharacterName(recipientId)}"
             }));
         recipientDropdown.AddOptions(options);
 
-        this.availableRecipients = recipients;
+        this.availableRecipientEntityIds = recipientEntityIds;
 
         // If selected recipient is not actiual, change to "Everybody"
-        if (GetRecipientDropdownIndex(selectedRecipient) == -1) {
-            selectedRecipient = CharacterId.NoIdentity;
+        if (GetRecipientDropdownIndex(selectedRecipientEntityId) == -1) {
+            selectedRecipientEntityId = null;
         }
 
         UpdatePanel();
     }
 
-    private CharacterId GetRecipientByDropdownIndex(int index) {
-        return index == 0 ? CharacterId.NoIdentity
-            : availableRecipients[index - 1];
+    private Guid? GetRecipientByDropdownIndex(int index) {
+        return index == 0
+            ? null
+            : availableRecipientEntityIds[index - 1];
     }
 
-    private int GetRecipientDropdownIndex(CharacterId recipient) {
-        if (recipient.IsNoIdentity)
+    private int GetRecipientDropdownIndex(Guid? recipientEntityId) {
+        if (recipientEntityId == null)
+        {
             return 0;
-        int indexOfRecipient = availableRecipients.IndexOf(recipient);
-        if (indexOfRecipient == -1)
-            return indexOfRecipient;
-        return indexOfRecipient + 1;
+        }
+        int indexOfRecipient = availableRecipientEntityIds.IndexOf(recipientEntityId.Value);
+        return indexOfRecipient == -1 ? indexOfRecipient : indexOfRecipient + 1;
     }
 
     private void UpdatePanel() {
-        recipientDropdown.value = GetRecipientDropdownIndex(selectedRecipient);
+        recipientDropdown.value = GetRecipientDropdownIndex(selectedRecipientEntityId);
         
-        var choices = choicesProvider.GetChoices(selectedRecipient);
+        var choices = choicesProvider.GetChoices(selectedRecipientEntityId);
         choiceItems?.ForEach(c => Destroy(c.gameObject));
         choiceItems = new List<ChoiceItem>();
 

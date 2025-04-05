@@ -5,26 +5,17 @@ using UnityEngine;
 public class CharacterNameGenerator
 {
     private readonly StructuredStringGenerator structuredStringGenerator;
-    private readonly ITaggedStringSchemaProvider generationSchemaProvider;
 
-    public CharacterNameGenerator(
-        TextAsset jsonAsset,
-        ITaggedStringSchemaProvider generationSchemaProvider)
+    public CharacterNameGenerator(TextAsset jsonAsset)
     {
         if (jsonAsset == null)
         {
             throw new ArgumentNullException(nameof(jsonAsset));
         }
-            
-        if (generationSchemaProvider == null)
-        {
-            throw new ArgumentNullException(nameof(generationSchemaProvider));
-        }
 
         var data = DeserializeData(jsonAsset);
 
         structuredStringGenerator = new StructuredStringGenerator(new(data));
-        this.generationSchemaProvider = generationSchemaProvider;
     }
 
     private StructuredStringContainer DeserializeData(TextAsset jsonAsset)
@@ -42,9 +33,8 @@ public class CharacterNameGenerator
             settings);
     }
 
-    public string Generate()
+    public string Generate(TaggedStringGenerationSchema schema)
     {
-        var schema = generationSchemaProvider.GetSchema();
         return structuredStringGenerator.Generate(schema);
     }
 }

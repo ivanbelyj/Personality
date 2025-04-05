@@ -15,14 +15,14 @@ public record SpeechSoundData : SoundData
     /// In real life, the recipient is not always determined by speech,
     /// but let's assume that the character addressed
     /// the speech to a certain recipient via some other ways.
-    /// 0 - recipient is not defined
+    /// null - recipient is not defined
     /// </summary>
-    public CharacterId RecipientId { get; set; }
+    public Guid? RecipientEntityId { get; set; }
 
     /// <summary>
-    /// 0 - speaker's identity is not defined
+    /// null - speaker's identity is not defined
     /// </summary>
-    public CharacterId SpeakerId { get; set; }
+    public Guid? SpeakerEntityId { get; set; }
 
     public override string ToDisplayText()
     {

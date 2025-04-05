@@ -9,10 +9,12 @@ public class DemoCharacterNameGenerator : MonoBehaviour
     private int namesCount = 5;
 
     private CharacterNameGenerator nameGenerator;
+    private PersonNameSchemaGenerator personNameSchemaGenerator;
 
     private void Start()
     {
-        nameGenerator = new(namesStructuredData, new AvrianNameSchemaProvider());
+        nameGenerator = new(namesStructuredData);
+        personNameSchemaGenerator = new PersonNameSchemaGenerator();
 
         Debug.Log("Generated character names:");
         for (int i = 0; i < namesCount; i++)
@@ -23,6 +25,14 @@ public class DemoCharacterNameGenerator : MonoBehaviour
     
     public string GenerateName()
     {
-        return nameGenerator.Generate();
+        return nameGenerator.Generate(personNameSchemaGenerator.Generate(GenerateParameters()));
+    }
+
+    private PersonalityGenerationParameters GenerateParameters()
+    {
+        // Todo:
+        return new() {
+
+        };
     }
 }
